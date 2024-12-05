@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
+import Footer from "./Footer";
 
 const Home = () => {
     return (
+        <>
         <div className="container-fluid">
             <div className="d-flex justify-content-center m-3 mt-5 pt-5">
                 <p className="display-1 text-white mt-5">Welcome to the Movie Review Website</p>
@@ -14,8 +16,9 @@ const Home = () => {
                 <Link to="/contact" className="btn btn-outline-light ms-4 btn-lg" role="button">Contact</Link>
             </div>
         </div>
-
+        <Footer />
+        </>
     );
 };
 
-export default Home
+export default Home;
