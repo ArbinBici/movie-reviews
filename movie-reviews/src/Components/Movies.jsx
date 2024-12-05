@@ -1,5 +1,5 @@
 const Movies = () => {
-    return <h1>Movies</h1>;
+    return <h1 className="container-fluid text-center">Movies</h1>;
 };
 
-export default Movies
+export default Movies;

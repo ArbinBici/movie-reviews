@@ -5,6 +5,7 @@ import './index.css';
 import Layout from './Components/Layout';
 import Home from './Components/Home';
 import Movies from './Components/Movies';
+import Contact from './Components/Contact';
 import NotFound from './Components/404';
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="movies" element={<Movies />} />
+            <Route path="contact" element={<Contact />}/>
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
