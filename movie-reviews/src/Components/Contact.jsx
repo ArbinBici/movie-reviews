@@ -24,6 +24,7 @@ const Contact = () => {
                         <div className="pt-4">
                             <button type="submit" className="btn btn-secondary text-white btn-lg" data-bs-toggle="modal" data-bs-target="#submit-message">Submit</button>
 
+                            {/* Modal */}
                             <div className="modal fade" id="submit-message" tabIndex={-1} aria-labelledby="submitted" aria-hidden="true">
                                 <div className="modal-dialog">
                                     <div className="modal-content">
@@ -40,7 +41,7 @@ const Contact = () => {
                                     </div>
                                 </div>
                             </div>
-
+                            {/* Modal End */}
                         </div>
                     </div>
                     <div className="col-lg-6">
@@ -48,8 +49,6 @@ const Contact = () => {
                     </div>
                 </div>                
             </div>
-            {/* Modal */}
-            
             <Footer />
         </>
     );
