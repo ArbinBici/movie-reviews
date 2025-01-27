@@ -1,11 +1,13 @@
 import os
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import psycopg2
 from psycopg2 import sql
 from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 
 DB_HOST = "localhost"
 DB_NAME = "postgres"
@@ -13,10 +15,10 @@ DB_USER = "postgres"
 DB_PASSWORD = "postgres"
 DB_PORT = 5432
 
-@app.route("/")
+@app.route("/test", methods=["GET"])
 def test():
     test_env = os.getenv("API_KEY")
-    return f"<p>Key: {test_env}</p>"
+    return jsonify({"key": test_env})
 
 def get_db_connection():
     conn = psycopg2.connect(
