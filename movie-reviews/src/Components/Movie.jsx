@@ -1,30 +1,62 @@
 import { useState } from "react";
 
 function Movie(props) {
-    
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [review, setReview] = useState("");
     const [rating, setRating] = useState("");
 
-    function handleSubmission() {
+    // Function to handle review submission
+    async function handleSubmission() {
         const newReview = {
-            Title: props.title,
-            Name: name,
-            Email: email,
-            Review: review,
-            Rating: rating,
+            movie_id: props.movie_id,  // Use the movie_id prop
+            name,
+            email,
+            review,
+            rating: parseInt(rating), // Ensure rating is stored as a number
         };
 
-        const existingReviews = JSON.parse(localStorage.getItem("reviews")) || [];
-        existingReviews.push(newReview);
-        localStorage.setItem("reviews", JSON.stringify(existingReviews));
+        try {
+            const response = await fetch("http://127.0.0.1:5000/add_review", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newReview),
+            });
 
-        alert("Review submitted!");
-        setName("");
-        setEmail("");
-        setReview("");
-        setRating("");
+            if (response.ok) {
+                alert("Review submitted successfully!");
+                setName("");
+                setEmail("");
+                setReview("");
+                setRating("");
+            } else {
+                alert("Failed to submit review.");
+            }
+        } catch (error) {
+            console.error("Error submitting review:", error);
+            alert("Error connecting to server.");
+        }
+    }
+
+    // Function to handle movie deletion
+    async function handleDeleteMovie() {
+        if (window.confirm("Are you sure you want to delete this movie?")) {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/delete_movie/${props.movie_id}`, {
+                    method: "DELETE",
+                });
+
+                if (response.ok) {
+                    alert("Movie deleted successfully!");
+                    window.location.reload(); // Refresh the page to reflect the deletion
+                } else {
+                    alert("Failed to delete movie.");
+                }
+            } catch (error) {
+                console.error("Error deleting movie:", error);
+                alert("Error connecting to server.");
+            }
+        }
     }
 
     const uniqueModalId = `add-review-${props.title.replace(/\s+/g, "-").toLowerCase()}`; // Unique ID based on the title
@@ -32,11 +64,14 @@ function Movie(props) {
     return (
         <>
             <div className="card bg-dark border-0">
-                <img src={props.posterLink} className="card-img-top rounded" alt={props.title}/>
+                <img src={props.posterLink} className="card-img-top rounded" alt={props.title} />
                 <div className="card-body text-center">
                     <h5 className="card-title text-white">{props.title}</h5>
                     <p className="card-text text-white">{props.description}</p>
-                    <button className="btn btn-secondary" data-bs-toggle="modal" data-bs-target={`#${uniqueModalId}`}>Add Review</button>
+                    <div className="d-flex justify-content-center gap-2">
+                        <button className="btn btn-secondary" data-bs-toggle="modal" data-bs-target={`#${uniqueModalId}`}>Add Review</button>
+                        <button className="btn btn-danger" onClick={handleDeleteMovie}>Remove Movie</button>
+                    </div>
 
                     {/* Modal */}
                     <div className="modal fade" id={uniqueModalId} tabIndex={-1} aria-labelledby="addReview">
@@ -44,17 +79,17 @@ function Movie(props) {
                             <div className="modal-content">
                                 <div className="modal-header">
                                     <h5 className="modal-title" id="addReview">Submit your review</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="modal-body">
+                                <div className="modal-body">
                                     <label className="form-label" htmlFor="name">Name:</label>
-                                    <input className="form-control" type="text" id="name" placeholder="Type your name" onChange={(e) => setName(e.target.value)} value={name}/>
+                                    <input className="form-control" type="text" id="name" placeholder="Type your name" onChange={(e) => setName(e.target.value)} value={name} />
                                     <label className="form-label" htmlFor="email">Email:</label>
-                                    <input className="form-control"type="email" id="email" placeholder="Type your email" onChange={(e) => setEmail(e.target.value)} value={email}/>
+                                    <input className="form-control" type="email" id="email" placeholder="Type your email" onChange={(e) => setEmail(e.target.value)} value={email} />
                                     <label className="form-label" htmlFor="review">Review:</label>
-                                    <textarea className="form-control" type="text" id="review" placeholder="Type your review" onChange={(e) => setReview(e.target.value)} value={review}/>
+                                    <textarea className="form-control" type="text" id="review" placeholder="Type your review" onChange={(e) => setReview(e.target.value)} value={review} />
                                     <label className="form-label" htmlFor="rating">Rating:</label>
-                                    <input className="form-control" type="number" id="rating" placeholder="Type your rating" onChange={(e) => setRating(e.target.value)} value={rating}/>
+                                    <input className="form-control" type="number" id="rating" placeholder="Type your rating" onChange={(e) => setRating(e.target.value)} value={rating} />
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -68,6 +103,6 @@ function Movie(props) {
             </div>
         </>
     );
-};
+}
 
 export default Movie;
