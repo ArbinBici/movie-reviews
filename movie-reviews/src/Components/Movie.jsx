@@ -5,15 +5,37 @@ function Movie(props) {
     const [email, setEmail] = useState("");
     const [review, setReview] = useState("");
     const [rating, setRating] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [ratingError, setRatingError] = useState("");
+
+    const validateEmail = (email) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    };
 
     // Function to handle review submission
     async function handleSubmission() {
+        // Reset errors
+        setEmailError("");
+        setRatingError("");
+
+        if (!validateEmail(email)) {
+            setEmailError("Please enter a valid email address.");
+            return;
+        }
+
+        const ratingValue = parseInt(rating);
+        if (isNaN(ratingValue) || ratingValue < 0 || ratingValue > 10) {
+            setRatingError("Rating must be an integer between 0 and 10.");
+            return;
+        }
+
         const newReview = {
-            movie_id: props.movie_id,  // Use the movie_id prop
+            movie_id: props.movie_id,
             name,
             email,
             review,
-            rating: parseInt(rating), // Ensure rating is stored as a number
+            rating: ratingValue, 
         };
 
         try {
@@ -86,10 +108,12 @@ function Movie(props) {
                                     <input className="form-control" type="text" id="name" placeholder="Type your name" onChange={(e) => setName(e.target.value)} value={name} />
                                     <label className="form-label" htmlFor="email">Email:</label>
                                     <input className="form-control" type="email" id="email" placeholder="Type your email" onChange={(e) => setEmail(e.target.value)} value={email} />
+                                    {emailError && <p className="text-danger">{emailError}</p>}
                                     <label className="form-label" htmlFor="review">Review:</label>
                                     <textarea className="form-control" type="text" id="review" placeholder="Type your review" onChange={(e) => setReview(e.target.value)} value={review} />
                                     <label className="form-label" htmlFor="rating">Rating:</label>
-                                    <input className="form-control" type="number" id="rating" placeholder="Type your rating" onChange={(e) => setRating(e.target.value)} value={rating} />
+                                    <input className="form-control" type="number" id="rating" placeholder="Type your rating (0-10)" onChange={(e) => setRating(e.target.value)} value={rating} />
+                                    {ratingError && <p className="text-danger">{ratingError}</p>}
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
